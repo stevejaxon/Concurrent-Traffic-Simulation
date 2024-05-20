@@ -44,13 +44,19 @@ private:
     std::deque<T> _queue;
 };
 
+
+enum TrafficLightPhase {
+    red,
+    green
+};
+
 // FP.1 : Define a class „TrafficLight“ which is a child class of TrafficObject. 
 // The class shall have the public methods „void waitForGreen()“ and „void simulate()“ 
 // as well as „TrafficLightPhase getCurrentPhase()“, where TrafficLightPhase is an enum that 
 // can be either „red“ or „green“. Also, add the private method „void cycleThroughPhases()“. 
 // Furthermore, there shall be the private member _currentPhase which can take „red“ or „green“ as its value. 
 
-class TrafficLight
+class TrafficLight : public TrafficObject
 {
 public:
     // constructor / desctructor
@@ -58,9 +64,12 @@ public:
     // getters / setters
 
     // typical behaviour methods
-
+    void waitForGreen();
+    void simulate();
+    TrafficLightPhase getCurrentPhase();
 private:
     // typical behaviour methods
+    void cycleThroughPhases();
 
     // FP.4b : create a private member of type MessageQueue for messages of type TrafficLightPhase 
     // and use it within the infinite loop to push each new TrafficLightPhase into it by calling 
@@ -68,6 +77,7 @@ private:
 
     std::condition_variable _condition;
     std::mutex _mutex;
+    TrafficLightPhase _currentPhase = TrafficLightPhase::green;
 };
 
 #endif

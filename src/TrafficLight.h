@@ -19,25 +19,8 @@ template <class T>
 class MessageQueue
 {
 public:
-    T receive()
-    {
-        std::unique_lock<std::mutex> uLock(_mutex);
-        _cond.wait(uLock, [this] { return !_queue.empty(); });
-        T msg = std::move(_queue.back());
-        _queue.pop_back();
-
-        return msg;
-    }
-
-    void send(T &&msg)
-    {
-        std::lock_guard<std::mutex> uLock(_mutex);
-
-        // add vector to queue
-        std::cout << "   Message " << msg << " has been sent to the queue" << std::endl;
-        _queue.push_back(std::move(msg));
-        _cond.notify_one();
-    }
+    T receive();
+    void send(T &&msg);
 private:
     std::mutex _mutex;
     std::condition_variable _cond;

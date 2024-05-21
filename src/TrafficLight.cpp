@@ -1,5 +1,7 @@
 #include <iostream>
 #include <random>
+#include <thread>
+
 #include "TrafficLight.h"
 
 /* Implementation of class "MessageQueue" */
@@ -70,7 +72,8 @@ void TrafficLight::toggleCurrentPhase()
 
 void TrafficLight::simulate()
 {
-    // FP.2b : Finally, the private method „cycleThroughPhases“ should be started in a thread when the public method „simulate“ is called. To do this, use the thread queue in the base class. 
+    // FP.2b : Finally, the private method „cycleThroughPhases“ should be started in a thread when the public method „simulate“ is called. To do this, use the thread queue in the base class.
+    threads.emplace_back(std::thread(&TrafficLight::cycleThroughPhases, this));
 }
 
 // virtual function which is executed in a thread

@@ -4,6 +4,7 @@
 #include <mutex>
 #include <deque>
 #include <condition_variable>
+#include <random>
 #include "TrafficObject.h"
 
 // forward declarations to avoid include cycle
@@ -43,6 +44,7 @@ class TrafficLight : public TrafficObject
 {
 public:
     // constructor / desctructor
+    TrafficLight();
 
     // getters / setters
 
@@ -51,16 +53,22 @@ public:
     void simulate();
     TrafficLightPhase getCurrentPhase();
 private:
+    static constexpr double kLoopCycleMin = 4;
+    static constexpr double kLoopCycleMax = 6;
     // typical behaviour methods
     void cycleThroughPhases();
+    void toggleCurrentPhase();
 
     // FP.4b : create a private member of type MessageQueue for messages of type TrafficLightPhase 
     // and use it within the infinite loop to push each new TrafficLightPhase into it by calling 
     // send in conjunction with move semantics.
-
+    MessageQueue<TrafficLightPhase> _queue;
+    
     std::condition_variable _condition;
     std::mutex _mutex;
     TrafficLightPhase _currentPhase = TrafficLightPhase::green;
+    std::mt19937 _loopCycleGen;
+    std::uniform_int_distribution<int> _loopCycleRandInterval;
 };
 
 #endif
